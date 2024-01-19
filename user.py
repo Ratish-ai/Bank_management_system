@@ -37,13 +37,60 @@ class user:
     
     def deposit(self):
         amt = int(input("Enter the amount to deposit : "))
+        self.sql.deposit(self.u_id,amt)
     
     def withdraw(self):
         amt = int(input("Enter the amount to withdraw : "))
-    
+        if self.sql.withdraw(self.u_id,amt):
+            def amount():
+                print("1. Re-enter the amount\n2. Go Back")
+                try:
+                    option = int(input("Enter your option : "))
+                except:
+                    print("Enter numerical value !!!!")
+                else:
+                    if option==1:
+                        amount()
+                    elif option==2:
+                        return self.home()
+                    else:
+                        print("Enter a valid number !!!!!!")
+                        amount()
+            amount()
+
     def transfer(self):
         acc = input("Enter the account number to transfer the money : ")
+        if self.sql.acc(acc):
+            print("Account not found")
+            def account():
+                print("1. Re-enter the account number\n2. Go Back")
+                option = input("Enter your option : ")
+                if option==1:
+                    account()
+                elif option==2:
+                    return self.home()
+                else:
+                    print("Enter a valid number !!!!!!")
+                    account()
+            account()
         amt = int(input("Enter the amount to transfer : "))
+        if self.sql.withdraw(self.u_id,amt):
+            def amount():
+                print("1. Re-enter the amount\n2. Go Back")
+                try:
+                    option = int(input("Enter your option : "))
+                except:
+                    print("Enter numerical value !!!!")
+                else:
+                    if option==1:
+                        amount()
+                    elif option==2:
+                        return self.home()
+                    else:
+                        print("Enter a valid number !!!!!!")
+                        amount()
+            amount()
+        self.sql.transfer(self.u_id,acc,amt)
     
     def view_transfer(self):
         pass

@@ -1,5 +1,6 @@
 import db
 import user
+import operations
 
 sql = db.login()
 
@@ -30,7 +31,7 @@ class first():
             def password():
                 print("Password Constraints :\n1. Should have at least one number.\n2. Should have at least one uppercase and one lowercase character.\n3. Should have at least one special symbol.\n4. Should be between 6 to 16 characters long.")
                 self.pwd = input("Enter your password : ")
-                if sql.password_validate(self.pwd):
+                if operations.password_validate(self.pwd):
                     print("Password is invalid !!!!!! ")
                     def next():
                         print("1. Re-enter password\n2. Go back\n3. Exit")

@@ -25,12 +25,6 @@ class login(sql):
         print(self.result)
         return self.result!=None
     
-    def password_validate(self,pwd):
-        reg = "^.*(?=.{6,16})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$"
-        pat = re.compile(reg)             
-        mat = re.search(pat, pwd)
-        return not mat
-    
     def user_pass(self,u_name,pwd):
         query = f"SELECT * FROM user_details WHERE user_name = '{u_name}'"
         self.mycursor.execute(query)
@@ -75,4 +69,33 @@ class user(sql):
     def __init__(self):
         super().__init__()
     
+    def deposit(self,u_id,amt):
+        query = f"SELECT balance FROM user_details WHERE user_id = {u_id};"
+        self.mycursor.execute(query)
+        bal = self.mycursor.fetchone()[0]
+        nb = bal+amt
+        query = f"UPDATE user_details SET balance = {nb} WHERE user_id = {u_id};"
+        self.mycursor.execute(query)
+        self.mydb.commit()
     
+    def withdraw(self,u_id,amt):
+        query = f"SELECT balance FROM user_details WHERE user_id = {u_id};"
+        self.mycursor.execute(query)
+        bal = self.mycursor.fetchone()[0]
+        if amt>bal:
+            print("Insufficient Balance !!!!!")
+            return True
+        nb = bal-amt
+        query = f"UPDATE user_details SET balance = {nb} WHERE user_id = {u_id};"
+        self.mycursor.execute(query)
+        self.mydb.commit()
+        return False
+    
+    def acc(self,acc):
+        query = f"SELECT acc_no FROM user_details WHERE acc_no = '{acc}';"
+        self.mycursor.execute(query)
+        bal = self.mycursor.fetchone()
+        return bal==None
+    
+    def transfer(self,u_id,acc,amt):
+        query = f""
