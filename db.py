@@ -1,5 +1,6 @@
 import mysql.connector
-import re
+from datetime import datetime
+import operations
 
 class sql:
     
@@ -97,5 +98,36 @@ class user(sql):
         bal = self.mycursor.fetchone()
         return bal==None
     
-    def transfer(self,u_id,acc,amt):
-        query = f""
+    def generate_transaction_id(self):
+        query = f"SELECT MAX(transaction_id) FROM transaction;"
+        self.mycursor.execute(query)
+        res = self.mycursor.fetchone()
+        if res is None:
+            return 1
+        return res[0]+1
+
+    
+    def transfer(self,from_u_id,to_acc,amt):
+        query = f"select user_id from user_details where acc_no = '{to_acc}';"
+        self.mycursor.execute(query)
+        to_u_id = self.mycursor.fetchone()[0]
+        self.deposit(self,to_u_id,amt)
+        self.withdraw(self,from_u_id,amt)
+        query = f"select acc_no from user_details where user_id = {from_u_id}"
+        self.mycursor.execute(query)
+        from_acc = self.mycursor.fetchone()[0]
+        date,time = str(datetime.now()).split()
+        time = operations.change_time(time)
+        t_id = self.generate_transaction_id()
+        query = f"INSERT INTO transaction (transaction_id,by,to,date,time,amt) VALUES ({t_id},'{from_acc}','{to_acc}','{date}','{time}',{amt})"
+        self.mycursor.execute(query)
+        self.mydb.commit()
+        self.update_transfer(self,t_id,from_acc,to_acc)
+    
+    def update_transfer(self,t_id,from_acc,to_acc):
+        query = f"INSERT INTO transaction_details (transaction_id,acc,type) VALUES ({t_id},'{from_acc}','debit')"
+        self.mycursor.execute(query)
+        self.mydb.commit()
+        query = f"INSERT INTO transaction_details (transaction_id,acc,type) VALUES ({t_id},'{to_acc}','credit')"
+        self.mycursor.execute(query)
+        self.mydb.commit()
