@@ -6,12 +6,12 @@ sql = db.login()
 
 class first():
     def __init__(self) -> None:
-        print("--------------- WELCOME TO THE BANK ---------------")
-        print("1. Sign Up\n2. Sign In\n3. Exit\n")
+        print("\n\n\n--------------- WELCOME TO THE BANK ---------------\n\n\n")
+        print("1. Sign Up\n2. Sign In\n3. Exit\n\n")
         try:
             self.option = int(input("Enter your Choice : "))
         except:
-            print("Enter a numerical value !!!!")
+            print("\n\nEnter a numerical value !!!!\n\n")
             first()
         else:
             if self.option==1:
@@ -19,26 +19,26 @@ class first():
             elif self.option==2:
                 self.signin()
             elif self.option==3:
-                print("--------------- THANK YOU ---------------")
+                print("\n\n\n--------------- THANK YOU ---------------\n\n\n")
                 exit()
             else:
-                print("Enter a Correct option !!!!")
+                print("\n\nEnter a Correct option !!!!\n\n")
                 first()
     
     def signup(self):
-        user_name = input("Enter your user name given by the bank admin : ")
+        user_name = input("\nEnter your user name given by the bank admin : ")
         if sql.user_name_validate(user_name):
             def password():
-                print("Password Constraints :\n1. Should have at least one number.\n2. Should have at least one uppercase and one lowercase character.\n3. Should have at least one special symbol.\n4. Should be between 6 to 16 characters long.")
-                self.pwd = input("Enter your password : ")
+                print("\nPassword Constraints :\n1. Should have at least one number.\n2. Should have at least one uppercase and one lowercase character.\n3. Should have at least one special symbol.\n4. Should be between 6 to 16 characters long.\n")
+                self.pwd = input("\nEnter your password : ")
                 if operations.password_validate(self.pwd):
-                    print("Password is invalid !!!!!! ")
+                    print("\n\nPassword is invalid !!!!!! \n\n")
                     def next():
-                        print("1. Re-enter password\n2. Go back\n3. Exit")
+                        print("\n1. Re-enter password\n2. Go back\n3. Exit\n")
                         try:
-                            ans = int(input("Enter your choice : "))
+                            ans = int(input("\nEnter your choice : "))
                         except:
-                            print("Enter a numerical value !!!!")
+                            print("\n\nEnter a numerical value !!!!\n\n")
                             next()
                         else:
                             if ans==1:
@@ -48,26 +48,26 @@ class first():
                             elif ans==3:
                                 exit()
                             else:
-                                print("Enter a valid number !!!!")
+                                print("\n\nEnter a valid number !!!!\n\n")
                                 next()
                     next()
             password()
             def conf_password():
-                pwd = input("Confirm your password : ")
+                pwd = input("\n\nConfirm your password : ")
                 if pwd!=self.pwd:
-                    print("Enter correct password !!!!!")
+                    print("\n\nEnter correct password !!!!!\n\n")
                     conf_password()
             conf_password()
             sql.user_pass(user_name,self.pwd)
-            print("Password set successfully !!!")
+            print("\nPassword set successfully !!!\n\n")
         else:
-            print("Invalid user !!!!")
+            print("\n\nInvalid user !!!!\n\n")
             def next():
-                print("1. Re-enter user name\n2. Go back\n3. Exit")
+                print("1. Re-enter user name\n2. Go back\n3. Exit\n")
                 try:
                     ans = int(input("Enter your choice : "))
                 except:
-                    print("Enter a numerical value !!!!")
+                    print("\n\nEnter a numerical value !!!!\n\n")
                     next()
                 else:
                     if ans==1:
@@ -77,23 +77,23 @@ class first():
                     elif ans==3:
                         exit()
                     else:
-                        print("Enter a valid number !!!!")
+                        print("\n\nEnter a valid number !!!!\n\n")
                         next()
             next()
 
     def signin(self):
-        user_name = input("Enter your user name : ")
+        user_name = input("\n\nEnter your user name : ")
         if sql.user_name_check(user_name):
             def password():
-                pwd = input("Enter your password : ")
+                pwd = input("\n\nEnter your password : ")
                 if not sql.password_check(user_name,pwd):
-                    print("Password is invalid !!!!!! ")
+                    print("\n\nPassword is invalid !!!!!! \n\n")
                     def next():
-                        print("1. Re-enter password\n2. Go back\n3. Exit")
+                        print("\n\n1. Re-enter password\n2. Go back\n3. Exit\n\n")
                         try:
                             ans = int(input("Enter your choice : "))
                         except:
-                            print("Enter a numerical value !!!!")
+                            print("\n\nEnter a numerical value !!!!\n\n")
                             next()
                         else:
                             if ans==1:
@@ -103,7 +103,7 @@ class first():
                             elif ans==3:
                                 exit()
                             else:
-                                print("Enter a valid number !!!!")
+                                print("\n\nEnter a valid number !!!!\n\n")
                                 next()
                     next()
             password()
@@ -114,13 +114,13 @@ class first():
             else:
                 user.user(sql.user_id(user_name))
         else:
-            print("Invalid user !!!!")
+            print("\n\nInvalid user !!!!\n\n")
             def next():
-                print("1. Re-enter user name\n2. Go back\n3. Exit")
+                print("\n\n1. Re-enter user name\n2. Go back\n3. Exit\n\n")
                 try:
                     ans = int(input("Enter your choice : "))
                 except:
-                    print("Enter a numerical value !!!!")
+                    print("\n\nEnter a numerical value !!!!\n\n")
                     next()
                 else:
                     if ans==1:
@@ -130,7 +130,7 @@ class first():
                     elif ans==3:
                         exit()
                     else:
-                        print("Enter a valid number !!!!")
+                        print("\n\nEnter a valid number !!!!\n\n")
                         next()
             next()
 

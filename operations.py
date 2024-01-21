@@ -14,5 +14,6 @@ def today_date():
 def now_time():
     time = str(datetime.now()).split()[1]
     time = time.split(':')
-    time[2] = str(int(time[2]))
+    time[2] = str(int(eval(time[2])))
+    print(time)
     return ':'.join(time)

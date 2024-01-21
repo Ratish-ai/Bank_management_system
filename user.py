@@ -5,7 +5,88 @@ class greetings:
         print(f"Welcome {name} !!!!")
 
 class admin:
-    pass
+    def __init__(self):
+        self.sql = db.admin()
+        self.home()
+    
+    def home(self):
+        print("1. Add Account\n2. Remove Account\n3. View all account details\n4. View a particular account detail\n\n5. Logout\n")
+        try:
+            option = input("Enter your option : ")
+        except:
+            print("Enter a numerical value !!!!!")
+            self.home()
+        else:
+            if option==1:
+                self.add_acc()
+            elif option==2:
+                self.remove_acc()
+            elif option==3:
+                self.view_all()
+                self.home()
+            elif option==4:
+                self.view_particular()
+                self.home()
+            elif option==5:
+                return
+            else:
+                print("Enter a correct option !!!!!")
+                self.home()
+    
+    def add_acc(self):
+        pass
+
+    def remove_acc(self):
+        acc_no = input("Enter the account number to be deleted !!!!")
+        def step():
+            print(f'\nVerify the account number : {acc_no}\n\n1. Correct\n2. Wrong')
+            try:
+                option = int(input('Enter your option : '))
+            except:
+                print("Enter a numerical value !!!!")
+                step()
+            else:
+                if option==1:
+                    self.sql.remove_acc(acc_no)
+                elif option==2:
+                    print("1. Re-enter account number\n2. Go Back\n")
+                    option = int(input('Enter your option : '))
+                    if option==1:
+                        self.remove_acc()
+                    elif option==2:
+                        self.home()
+                    else:
+                        step()
+        step()
+        self.sql.remove(acc_no)
+        print("Account removed Succesfully !!!")
+    
+    def view_all(self):
+        self.sql.view_all()
+    
+    def view_particular(self):
+        acc_no = input("Enter the account number to be deleted !!!!")
+        def step():
+            print(f'\nVerify the account number : {acc_no}\n\n1. Correct\n2. Wrong')
+            try:
+                option = int(input('Enter your option : '))
+            except:
+                print("Enter a numerical value !!!!")
+                step()
+            else:
+                if option==1:
+                    self.sql.remove_acc(acc_no)
+                elif option==2:
+                    print("1. Re-enter account number\n2. Go Back\n")
+                    option = int(input('Enter your option : '))
+                    if option==1:
+                        self.remove_acc()
+                    elif option==2:
+                        self.home()
+                    else:
+                        step()
+        step()
+        self.sql.view_acc(acc_no)
 
 class user:
     def __init__(self,u_id) -> None:
@@ -40,9 +121,11 @@ class user:
     
     def deposit(self):
         amt = int(input("Enter the amount to deposit : "))
-        t_id = self.sql.deposit(self.u_id,amt)
-        from_acc = self.sql.acc_no(self.u_id)
-        self.sql.transaction(t_id,'self',from_acc,amt)
+        t_id = self.sql.generate_transaction_id()
+        self.sql.deposit(self.u_id,amt)
+        to_acc = self.sql.acc_no(self.u_id)
+        self.sql.transaction(t_id,'self',to_acc,amt)
+        self.sql.credit_transfer(t_id,to_acc)
     
     def withdraw(self):
         amt = int(input("Enter the amount to withdraw : "))
@@ -64,9 +147,11 @@ class user:
                         print("Enter a valid number !!!!!!")
                         amount()
             amount()
-        t_id = self.sql.withdraw(self.u_id,amt)
+        t_id = self.sql.generate_transaction_id()
+        self.sql.withdraw(self.u_id,amt)
         from_acc = self.sql.acc_no(self.u_id)
         self.sql.transaction(t_id,from_acc,'self',amt)
+        self.sql.debit_transfer(t_id,from_acc)
 
     def transfer(self):
         acc = input("Enter the account number to transfer the money : ")
@@ -105,7 +190,8 @@ class user:
         self.sql.transfer(self.u_id,acc,amt)
     
     def view_transfer(self):
-        pass
+        self.balance()
+        self.sql.view_transactions(self.u_id)
     
     def balance(self):
         bal = self.sql.balance(self.u_id)

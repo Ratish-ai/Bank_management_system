@@ -1,5 +1,6 @@
 import mysql.connector
 import operations
+from tabulate import tabulate
 
 class sql:
     
@@ -81,11 +82,6 @@ class user(sql):
         query = f"UPDATE user_details SET balance = {nb} WHERE user_id = {u_id};"
         self.mycursor.execute(query)
         self.mydb.commit()
-        if t_id is None:
-            t_id = self.generate_transaction_id()
-        acc = self.acc_no(u_id)
-        self.credit_transfer(t_id,acc)
-        return t_id
     
     def withdraw(self,u_id,amt,t_id=None):
         bal = self.balance(u_id)
@@ -93,11 +89,6 @@ class user(sql):
         query = f"UPDATE user_details SET balance = {nb} WHERE user_id = {u_id};"
         self.mycursor.execute(query)
         self.mydb.commit()
-        if t_id is None:
-            t_id = self.generate_transaction_id()
-        acc = self.acc_no(u_id)
-        self.debit_transfer(t_id,acc)
-        return t_id
     
     def acc(self,acc):
         query = f"SELECT acc_no FROM user_details WHERE acc_no = '{acc}';"
@@ -140,10 +131,33 @@ class user(sql):
         self.deposit(to_u_id,amt,t_id)
         self.withdraw(from_u_id,amt,t_id)
         self.transaction(t_id,from_acc,to_acc,amt)
+        self.debit_transfer(t_id,from_acc)
+        self.credit_transfer(t_id,to_acc)
     
     def transaction(self,t_id,from_acc,to_acc,amt):
         date = operations.today_date()
         time = operations.now_time()
-        query = f"INSERT INTO transaction (transaction_id,by,to,date,time,amt) VALUES ({t_id},'{from_acc}','{to_acc}','{date}','{time}',{amt})"
+        print(time)
+        query = f"INSERT INTO transaction (transaction_id,by,to,date,time,amt) VALUES ({t_id},'{from_acc}','{to_acc}','{date}',TIME('{time}'),{float(amt)});"
         self.mycursor.execute(query)
         self.mydb.commit()
+    
+    def view_transactions(self,u_id):
+        acc = self.acc_no(u_id)
+        query = f"SELECT transaction.by, transaction.to, transaction.date, transaction.time, transaction.amt, transaction_details.type FROM transaction, transaction_details WHERE transaction_details.acc = '{acc}' ORDER BY transaction.transaction_id DESC;"
+        self.mycursor.execute(query)
+        res = self.mycursor.fetchall()
+        print(tabulate(res,headers=['From','To','Date (YYYY-MM-DD)','Time (HH:MM:SS)','Amount','Transfer Type']))
+
+class admin(user):
+    def __init__(self):
+        super().__init__()
+    
+    def view_all(self):
+        pass
+
+    def view_acc(self,acc_no):
+        pass
+
+    def remove(self,acc_no):
+        pass
