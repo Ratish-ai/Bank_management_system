@@ -14,7 +14,7 @@ class user:
         self.home()
     
     def home(self):
-        print("1. Deposit\n2. Withdraw\n3. Transfer amount\n4. View Statement\n5. Logout")
+        print("1. Deposit\n2. Withdraw\n3. Transfer amount\n4. View Statement\n5. View Balance\n6. Logout")
         try:
             self.option = int(input("Enter your Choice : "))
         except:
@@ -30,6 +30,9 @@ class user:
             elif self.option==4:
                 self.view_transfer()
             elif self.option==5:
+                self.balance()
+                self.home()
+            elif self.option==6:
                 return
             else:
                 print("Enter a Correct option !!!!")
@@ -37,11 +40,15 @@ class user:
     
     def deposit(self):
         amt = int(input("Enter the amount to deposit : "))
-        self.sql.deposit(self.u_id,amt)
+        t_id = self.sql.deposit(self.u_id,amt)
+        from_acc = self.sql.acc_no(self.u_id)
+        self.sql.transaction(t_id,'self',from_acc,amt)
     
     def withdraw(self):
         amt = int(input("Enter the amount to withdraw : "))
-        if self.sql.withdraw(self.u_id,amt):
+        bal = self.sql.balance(self.u_id)
+        if bal<amt:
+            print("Insufficient Balance")
             def amount():
                 print("1. Re-enter the amount\n2. Go Back")
                 try:
@@ -57,11 +64,14 @@ class user:
                         print("Enter a valid number !!!!!!")
                         amount()
             amount()
+        t_id = self.sql.withdraw(self.u_id,amt)
+        from_acc = self.sql.acc_no(self.u_id)
+        self.sql.transaction(t_id,from_acc,'self',amt)
 
     def transfer(self):
         acc = input("Enter the account number to transfer the money : ")
         if self.sql.acc(acc):
-            print("Account not found")
+            print("Account not found !!!!!!")
             def account():
                 print("1. Re-enter the account number\n2. Go Back")
                 option = input("Enter your option : ")
@@ -74,7 +84,9 @@ class user:
                     account()
             account()
         amt = int(input("Enter the amount to transfer : "))
-        if self.sql.withdraw(self.u_id,amt):
+        bal = self.sql.balance(self.u_id)
+        if bal<amt:
+            print("Insufficient Balance")
             def amount():
                 print("1. Re-enter the amount\n2. Go Back")
                 try:
@@ -94,3 +106,7 @@ class user:
     
     def view_transfer(self):
         pass
+    
+    def balance(self):
+        bal = self.sql.balance(self.u_id)
+        print(f"Current balance : {bal}")
