@@ -147,17 +147,45 @@ class user(sql):
         query = f"SELECT transaction.by, transaction.to, transaction.date, transaction.time, transaction.amt, transaction_details.type FROM transaction, transaction_details WHERE transaction_details.acc = '{acc}' ORDER BY transaction.transaction_id DESC;"
         self.mycursor.execute(query)
         res = self.mycursor.fetchall()
-        print(tabulate(res,headers=['From','To','Date (YYYY-MM-DD)','Time (HH:MM:SS)','Amount','Transfer Type']))
+        print(tabulate(res,headers=['From','To','Date (YYYY-MM-DD)','Time (HH:MM:SS)','Amount','Transfer Type']),end='\n\n')
 
 class admin(user):
     def __init__(self):
         super().__init__()
     
     def view_all(self):
-        pass
+        query = f"SELECT name,acc_no,balance,phone_num FROM user_details;"
+        self.mycursor.execute(query)
+        res = self.mycursor.fetchall()
+        print(tabulate(res,headers=['Name', 'Account Number', 'Current balance', 'Phone Number']),end='\n\n')
 
     def view_acc(self,acc_no):
-        pass
+        query = f"SELECT name,user_name,acc_no,balance,phone_num FROM user_details WHERE acc_no='{acc_no}';"
+        self.mycursor.execute(query)
+        res = self.mycursor.fetchall()
+        print("\nAccount details!!!\n")
+        print(tabulate(res,headers=['Name', 'User Name', 'Account Number', 'Current balance', 'Phone Number']),end='\n\n')
+        u_id = super().find_uid(acc_no)
+        print('Transaction details !!!!!\n')
+        super().view_transactions(u_id)
 
     def remove(self,acc_no):
+        query = f"DELETE FROM user_details WHERE acc_no = '{acc_no}';"
+        self.mycursor.execute(query)
+        self.mydb.commit()
+    
+    def generate_user_id(self):
         pass
+    
+    def generate_acc_no(self):
+        pass
+
+    def generate_user_name(self,name,phone):
+        pass
+    
+    def add(self):
+        user_id = self.generate_user_id()
+        name = input('Enter user name : ')
+        acc_no = self.generate_acc_no()
+        phone_num = input('Enter phone number : ')
+        user_name = self.generate_user_name(name,phone_num)
