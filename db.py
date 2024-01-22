@@ -175,13 +175,31 @@ class admin(user):
         self.mydb.commit()
     
     def generate_user_id(self):
-        pass
+        query = f"SELECT MAX(user_id) FROM user_details;"
+        self.mycursor.execute(query)
+        res = self.mycursor.fetchone()
+        if res is None or res[0] is None:
+            return 1
+        return res[0]+1
     
     def generate_acc_no(self):
-        pass
+        acc = operations.generate_acc_no()
+        query = f"SELECT acc_no FROM user_details WHERE acc_no='{acc}';"
+        self.mycursor.execute(query)
+        res = self.mycursor.fetchone()
+        if res is None or res[0] is None:
+            return acc
+        return self.generate_acc_no()
 
     def generate_user_name(self,name,phone):
-        pass
+        uname = operations.generate_user_name(name,phone)
+        query = f"SELECT user_name FROM user_details WHERE user_name='{name}';"
+        self.mycursor.execute(query)
+        res = self.mycursor.fetchone()
+        if res is None or res[0] is None:
+            return uname
+        uname = uname+phone[5:]
+        return uname
     
     def add(self):
         user_id = self.generate_user_id()
@@ -189,3 +207,11 @@ class admin(user):
         acc_no = self.generate_acc_no()
         phone_num = input('Enter phone number : ')
         user_name = self.generate_user_name(name,phone_num)
+        bal = int(input("Enter the security deposit amount for the account : "))
+        query = f"INSERT INTO user_details (user_id, name, user_name, acc_no, balance, phone_num) VALUES ({user_id},'{name}','{user_name}','{acc_no}',0,'{phone_num}')"
+        self.mycursor.execute(query)
+        self.mydb.commit()
+        super().deposit(user_id,bal)
+        t_id = super().generate_transaction_id()
+        super().transaction(t_id,'self',acc_no,bal)
+        super().credit_transfer(t_id,acc_no)
