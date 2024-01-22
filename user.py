@@ -10,9 +10,9 @@ class admin:
         self.home()
     
     def home(self):
-        print("1. Add Account\n2. Remove Account\n3. View all account details\n4. View a particular account detail\n\n5. Logout\n")
+        print("1. Add Account\n2. Remove Account\n3. View all account details\n4. View a particular account detail\n5. Logout\n")
         try:
-            option = input("Enter your option : ")
+            option = int(input("Enter your option : "))
         except:
             print("Enter a numerical value !!!!!")
             self.home()
@@ -23,21 +23,19 @@ class admin:
                 self.remove_acc()
             elif option==3:
                 self.view_all()
-                self.home()
             elif option==4:
                 self.view_particular()
-                self.home()
             elif option==5:
                 return
             else:
                 print("Enter a correct option !!!!!")
-                self.home()
+        self.home()
     
     def add_acc(self):
-        pass
+        self.sql.add()
 
     def remove_acc(self):
-        acc_no = input("Enter the account number to be deleted !!!!")
+        acc_no = input("Enter the account number to be deleted : ")
         def step():
             print(f'\nVerify the account number : {acc_no}\n\n1. Correct\n2. Wrong')
             try:
@@ -54,7 +52,7 @@ class admin:
                     if option==1:
                         self.remove_acc()
                     elif option==2:
-                        self.home()
+                        return
                     else:
                         step()
         step()
@@ -65,7 +63,7 @@ class admin:
         self.sql.view_all()
     
     def view_particular(self):
-        acc_no = input("Enter the account number to be deleted !!!!")
+        acc_no = input("Enter the account number to be deleted : ")
         def step():
             print(f'\nVerify the account number : {acc_no}\n\n1. Correct\n2. Wrong')
             try:
@@ -75,18 +73,17 @@ class admin:
                 step()
             else:
                 if option==1:
-                    self.sql.remove_acc(acc_no)
+                    self.sql.view_acc(acc_no)
                 elif option==2:
                     print("1. Re-enter account number\n2. Go Back\n")
                     option = int(input('Enter your option : '))
                     if option==1:
-                        self.remove_acc()
+                        self.view_particular()
                     elif option==2:
-                        self.home()
+                        return
                     else:
                         step()
         step()
-        self.sql.view_acc(acc_no)
 
 class user:
     def __init__(self,u_id) -> None:
@@ -112,12 +109,11 @@ class user:
                 self.view_transfer()
             elif self.option==5:
                 self.balance()
-                self.home()
             elif self.option==6:
                 return
             else:
                 print("Enter a Correct option !!!!")
-                self.home()
+            self.home()
     
     def deposit(self):
         amt = int(input("Enter the amount to deposit : "))
@@ -142,7 +138,7 @@ class user:
                     if option==1:
                         amount()
                     elif option==2:
-                        return self.home()
+                        return
                     else:
                         print("Enter a valid number !!!!!!")
                         amount()
@@ -163,7 +159,7 @@ class user:
                 if option==1:
                     account()
                 elif option==2:
-                    return self.home()
+                    return 
                 else:
                     print("Enter a valid number !!!!!!")
                     account()
@@ -182,7 +178,7 @@ class user:
                     if option==1:
                         amount()
                     elif option==2:
-                        return self.home()
+                        return
                     else:
                         print("Enter a valid number !!!!!!")
                         amount()

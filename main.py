@@ -124,7 +124,7 @@ class first():
                     next()
                 else:
                     if ans==1:
-                        self.signup()
+                        self.signin()
                     elif ans==2:
                         return 
                     elif ans==3:

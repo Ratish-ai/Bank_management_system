@@ -40,6 +40,8 @@ class login(sql):
         query = f"SELECT * FROM user_login WHERE user_name = '{u_name}';"
         self.mycursor.execute(query)
         self.result = self.mycursor.fetchone()
+        if self.result is None:
+            return False
         return u_name in self.result
     
     def password_check(self,u_name,pwd):
@@ -101,7 +103,9 @@ class user(sql):
         self.mycursor.execute(query)
         res = self.mycursor.fetchone()
         if res is None or res[0] is None:
+            print(True)
             return 1
+        print(res[0]+1)
         return res[0]+1
     
     def acc_no(self,u_id):
@@ -137,14 +141,13 @@ class user(sql):
     def transaction(self,t_id,from_acc,to_acc,amt):
         date = operations.today_date()
         time = operations.now_time()
-        print(time)
-        query = f"INSERT INTO transaction (transaction_id,by,to,date,time,amt) VALUES ({t_id},'{from_acc}','{to_acc}','{date}',TIME('{time}'),{float(amt)});"
+        query = f"INSERT INTO transaction (transaction_id,`by`,`to`,date,time,amt) VALUES ({t_id},'{from_acc}','{to_acc}','{date}','{time}',{float(amt)});"
         self.mycursor.execute(query)
         self.mydb.commit()
     
     def view_transactions(self,u_id):
         acc = self.acc_no(u_id)
-        query = f"SELECT transaction.by, transaction.to, transaction.date, transaction.time, transaction.amt, transaction_details.type FROM transaction, transaction_details WHERE transaction_details.acc = '{acc}' ORDER BY transaction.transaction_id DESC;"
+        query = f"select transaction.by, transaction.to, transaction.date, transaction.time, transaction.amt, transaction_details.type from transaction left join transaction_details on transaction.transaction_id=transaction_details.transaction_id where transaction_details.acc='{acc}';"
         self.mycursor.execute(query)
         res = self.mycursor.fetchall()
         print(tabulate(res,headers=['From','To','Date (YYYY-MM-DD)','Time (HH:MM:SS)','Amount','Transfer Type']),end='\n\n')
@@ -215,3 +218,5 @@ class admin(user):
         t_id = super().generate_transaction_id()
         super().transaction(t_id,'self',acc_no,bal)
         super().credit_transfer(t_id,acc_no)
+        print("\n\n Account Created Successfully !!!!!\n\n")
+        print(f"User Name : {user_name}\n")
