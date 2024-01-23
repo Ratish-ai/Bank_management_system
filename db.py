@@ -23,7 +23,6 @@ class login(sql):
         query = f"SELECT * FROM user_details WHERE user_name = '{u_name}'"
         self.mycursor.execute(query)
         self.result = self.mycursor.fetchall()
-        print(self.result)
         return self.result!=None
     
     def user_pass(self,u_name,pwd):
@@ -103,9 +102,7 @@ class user(sql):
         self.mycursor.execute(query)
         res = self.mycursor.fetchone()
         if res is None or res[0] is None:
-            print(True)
             return 1
-        print(res[0]+1)
         return res[0]+1
     
     def acc_no(self,u_id):
@@ -124,9 +121,10 @@ class user(sql):
         self.mydb.commit()
     
     def find_uid(self,acc):
-        query = f"SELECT user_id FROM user_details WHERE acc_no='{acc}'"
+        query = f"SELECT user_id FROM user_details WHERE acc_no='{acc}';"
         self.mycursor.execute(query)
-        return self.mycursor.fetchone()[0]
+        res=self.mycursor.fetchone()
+        return res[0]
     
     def transfer(self,from_u_id,to_acc,amt):
         from_acc = self.acc_no(from_u_id)
@@ -173,6 +171,10 @@ class admin(user):
         super().view_transactions(u_id)
 
     def remove(self,acc_no):
+        u_id = super().find_uid(acc_no)
+        query = f"DELETE FROM user_login WHERE user_id = '{u_id}';"
+        self.mycursor.execute(query)
+        self.mydb.commit()
         query = f"DELETE FROM user_details WHERE acc_no = '{acc_no}';"
         self.mycursor.execute(query)
         self.mydb.commit()

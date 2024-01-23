@@ -45,7 +45,7 @@ class admin:
                 step()
             else:
                 if option==1:
-                    self.sql.remove_acc(acc_no)
+                    self.sql.remove(acc_no)
                 elif option==2:
                     print("1. Re-enter account number\n2. Go Back\n")
                     option = int(input('Enter your option : '))
@@ -56,8 +56,11 @@ class admin:
                     else:
                         step()
         step()
-        self.sql.remove(acc_no)
-        print("Account removed Succesfully !!!")
+        try:
+            self.sql.remove(acc_no)
+            print("Account removed Succesfully !!!")
+        except:
+            print("Wrong account Number !!!!!")
     
     def view_all(self):
         self.sql.view_all()
