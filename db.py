@@ -22,15 +22,15 @@ class login(sql):
     def user_name_validate(self,u_name):
         query = f"SELECT * FROM user_details WHERE user_name = '{u_name}'"
         self.mycursor.execute(query)
-        self.result = self.mycursor.fetchall()
-        return self.result!=None
+        result = self.mycursor.fetchall()
+        return result!=None
     
     def user_pass(self,u_name,pwd):
         query = f"SELECT * FROM user_details WHERE user_name = '{u_name}'"
         self.mycursor.execute(query)
-        self.result = self.mycursor.fetchone()
-        u_id = self.result[0]
-        name = self.result[1]
+        result = self.mycursor.fetchone()
+        u_id = result[0]
+        name = result[1]
         query = f"INSERT INTO user_login (user_id,name,user_name,password,user_type) VALUES ({u_id},'{name}','{u_name}','{pwd}','user')"
         self.mycursor.execute(query)
         self.mydb.commit()
@@ -38,34 +38,34 @@ class login(sql):
     def user_name_check(self,u_name):
         query = f"SELECT * FROM user_login WHERE user_name = '{u_name}';"
         self.mycursor.execute(query)
-        self.result = self.mycursor.fetchone()
-        if self.result is None:
+        result = self.mycursor.fetchone()
+        if result is None:
             return False
-        return u_name in self.result
+        return u_name in result
     
     def password_check(self,u_name,pwd):
         query = f"SELECT password FROM user_login WHERE user_name = '{u_name}';"
         self.mycursor.execute(query)
-        self.result = self.mycursor.fetchone()
-        return pwd in self.result
+        result = self.mycursor.fetchone()
+        return pwd in result
     
     def user_type(self,u_name):
         query = f"SELECT user_type FROM user_login WHERE user_name = '{u_name}';"
         self.mycursor.execute(query)
-        self.result = self.mycursor.fetchone()
-        return self.result[0]
+        result = self.mycursor.fetchone()
+        return result[0]
     
     def name(self,u_name):
         query = f"SELECT name FROM user_login WHERE user_name = '{u_name}';"
         self.mycursor.execute(query)
-        self.result = self.mycursor.fetchone()
-        return self.result[0]
+        result = self.mycursor.fetchone()
+        return result[0]
     
     def user_id(self,u_name):
         query = f"SELECT user_id FROM user_login WHERE user_name = '{u_name}';"
         self.mycursor.execute(query)
-        self.result = self.mycursor.fetchone()
-        return self.result[0]
+        result = self.mycursor.fetchone()
+        return result[0]
 
 class user(sql):
     def __init__(self):
